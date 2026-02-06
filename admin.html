@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application System - Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 10px 10px;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: #3498db;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+        
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: #3498db;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #2c3e50;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #1a252f;
+        }
+        
+        .btn-logout {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-logout:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #219653;
+        }
+        
+        .btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #d68910;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .applicants-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .applicants-table th, .applicants-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .applicants-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .applicants-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+        
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+        
+        .stat-title {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 10px;
+            padding: 30px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #7f8c8d;
+            line-height: 1;
+        }
+        
+        .application-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .preview-section {
+            margin-bottom: 25px;
+        }
+        
+        .preview-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .preview-value {
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .preview-photo {
+            text-align: center;
+            grid-column: span 2;
+        }
+        
+        .preview-photo img {
+            max-width: 180px;
+            border-radius: 5px;
+            border: 2px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .application-preview {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-photo {
+                grid-column: span 1;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .applicants-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Login Screen -->
+    <div id="adminLoginScreen" class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-user-shield"></i>
+                <span>Job Application System - Admin</span>
+            </div>
+            <div class="subtitle">Administrator Login Portal</div>
+        </header>
+        
+        <div class="login-container">
+            <h2 class="login-title"><i class="fas fa-lock"></i> Admin Login</h2>
+            
+            <div class="form-group">
+                <label for="adminUsername"><i class="fas fa-user"></i> Username</label>
+                <input type="text" id="adminUsername" placeholder="Enter admin username">
+            </div>
+            
+            <div class="form-group">
+                <label for="adminPassword"><i class="fas fa-key"></i> Password</label>
+                <input type="password" id="adminPassword" placeholder="Enter admin password">
+            </div>
+            
+            <div class="form-group">
+                <button id="adminLoginBtn" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i> Login as Admin
+                </button>
+            </div>
+            
+            <div class="form-group" style="text-align: center; font-size: 14px; color: #7f8c8d;">
+                <p>Default admin credentials: username: admin, password: admin123</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Job Application System &copy; 2023 | Admin Portal</p>
+        </footer>
+    </div>
+    
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="container hidden">
+        <header>
+            <div class="logo">
+                <i class="fas fa-user-shield"></i>
+                <span>Admin Dashboard</span>
+            </div>
+            <div class="subtitle">Manage all job applications and candidates</div>
+            <button id="adminLogoutBtn" class="btn btn-logout" style="margin-top: 15px;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </header>
+        
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chart-bar"></i> Application Statistics</h2>
+                    <div>
+                        <button id="refreshStatsBtn" class="btn btn-primary">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="stats-container" id="statsContainer">
+                    <!-- Stats will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-users"></i> Manage Applications</h2>
+                    <div>
+                        <button id="exportDataBtn" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tabs">
+                    <div class="tab active" data-tab="all">All Applications</div>
+                    <div class="tab" data-tab="pending">Pending Review</div>
+                    <div class="tab" data-tab="approved">Approved</div>
+                    <div class="tab" data-tab="rejected">Rejected</div>
+                </div>
+                
+                <div class="tab-content active" id="allTab">
+                    <table class="applicants-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Education</th>
+                                <th>Skills</th>
+                                <th>Bike</th>
+                                <th>Status</th>
+                                <th>Applied On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allTableBody">
+                            <!-- All applications will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-content" id="pendingTab">
+                    <table class="applicants-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Education</th>
+                                <th>Skills</th>
+                                <th>Bike</th>
+                                <th>Applied On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingTableBody">
+                            <!-- Pending applications will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-content" id="approvedTab">
+                    <table class="applicants-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Education</th>
+                                <th>Skills</th>
+                                <th>Bike</th>
+                                <th>Approved On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvedTableBody">
+                            <!-- Approved applications will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-content" id="rejectedTab">
+                    <table class="applicants-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Education</th>
+                                <th>Skills</th>
+                                <th>Bike</th>
+                                <th>Rejected On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rejectedTableBody">
+                            <!-- Rejected applications will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Users Management -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-user-friends"></i> Registered Candidates</h2>
+                </div>
+                
+                <table class="applicants-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Registered On</th>
+                            <th>Applications</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Users will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Job Application System &copy; 2023 | Admin Dashboard</p>
+            <p style="font-size: 12px; margin-top: 5px;">This page is only accessible to administrators</p>
+        </footer>
+    </div>
+    
+    <!-- Application Details Modal -->
+    <div id="applicantModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-user-circle"></i> Application Details</h2>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            
+            <div id="applicantDetails">
+                <!-- Application details will be loaded here -->
+            </div>
+            
+            <div class="admin-actions" id="adminActions">
+                <!-- Admin action buttons will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-edit"></i> Review Application</h2>
+                <button class="close-btn" id="closeReviewBtn">&times;</button>
+            </div>
+            
+            <div id="reviewContent">
+                <div class="form-group">
+                    <label for="reviewStatus">Status</label>
+                    <select id="reviewStatus">
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="adminNotes">Notes / Comments</label>
+                    <textarea id="adminNotes" rows="5" placeholder="Enter your notes or comments about this application"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reviewedBy">Reviewed By</label>
+                    <input type="text" id="reviewedBy" placeholder="Enter your name">
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button id="cancelReviewBtn" class="btn btn-secondary">Cancel</button>
+                <button id="saveReviewBtn" class="btn btn-success">Save Review</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Admin credentials (in real app, this should be on server side)
+        const ADMIN_CREDENTIALS = {
+            username: "admin",
+            password: "admin123"
+        };
+        
+        // Current application being reviewed
+        let currentApplicationId = null;
+        
+        // DOM Elements
+        const adminLoginScreen = document.getElementById('adminLoginScreen');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+        const refreshStatsBtn = document.getElementById('refreshStatsBtn');
+        const exportDataBtn = document.getElementById('exportDataBtn');
+        const tabs = document.querySelectorAll('.tab');
+        const applicantModal = document.getElementById('applicantModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const reviewModal = document.getElementById('reviewModal');
+        const closeReviewBtn = document.getElementById('closeReviewBtn');
+        const cancelReviewBtn = document.getElementById('cancelReviewBtn');
+        const saveReviewBtn = document.getElementById('saveReviewBtn');
+        
+        // Admin login
+        adminLoginBtn.addEventListener('click', function() {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            
+            if (!username || !password) {
+                alert('Please enter username and password');
+                return;
+            }
+            
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                // Successful login
+                adminLoginScreen.classList.add('hidden');
+                adminDashboard.classList.remove('hidden');
+                
+                // Load data
+                loadStatistics();
+                loadApplications();
+                loadUsers();
+                
+                // Clear login form
+                document.getElementById('adminUsername').value = '';
+                document.getElementById('adminPassword').value = '';
+            } else {
+                alert('Invalid admin credentials');
+            }
+        });
+        
+        // Admin logout
+        adminLogoutBtn.addEventListener('click', function() {
+            adminDashboard.classList.add('hidden');
+            adminLoginScreen.classList.remove('hidden');
+        });
+        
+        // Refresh stats
+        refreshStatsBtn.addEventListener('click', function() {
+            loadStatistics();
+            loadApplications();
+            loadUsers();
+        });
+        
+        // Export data
+        exportDataBtn.addEventListener('click', function() {
+            exportData();
+        });
+        
+        // Tab switching
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                document.getElementById(`${tabId}Tab`).classList.add('active');
+            });
+        });
+        
+        // Load statistics
+        function loadStatistics() {
+            const applications = JSON.parse(localStorage.getItem('jobApplications')) || [];
+            const users = JSON.parse(localStorage.getItem('jobUsers')) || [];
+            
+            // Calculate statistics
+            const totalApplications = applications.length;
+            const pendingApplications = applications.filter(app => app.status === 'pending').length;
+            const approvedApplications = applications.filter(app => app.status === 'approved').length;
+            const rejectedApplications = applications.filter(app => app.status === 'rejected').length;
+            const totalUsers = users.length;
+            const withBike = applications.filter(app => app.hasBike === 'Yes').length;
+            
+            // Update stats container
+            document.getElementById('statsContainer').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-title">Total Applications</div>
+                    <div class="stat-value">${totalApplications}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Pending Review</div>
+                    <div class="stat-value">${pendingApplications}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Approved</div>
+                    <div class="stat-value">${approvedApplications}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Rejected</div>
+                    <div class="stat-value">${rejectedApplications}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Registered Candidates</div>
+                    <div class="stat-value">${totalUsers}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">With Bike</div>
+                    <div class="stat-value">${withBike}</div>
+                </div>
+            `;
+        }
+        
+        // Load applications
+        function loadApplications() {
+            const applications = JSON.parse(localStorage.getItem('jobApplications')) || [];
+            
+            // Update all applications table
+            updateTable('allTableBody', applications);
+            
+            // Update pending applications table
+            const pendingApplications = applications.filter(app => app.status === 'pending');
+            updateTable('pendingTableBody', pendingApplications);
+            
+            // Update approved applications table
+            const approvedApplications = applications.filter(app => app.status === 'approved');
+            updateTable('approvedTableBody', approvedApplications);
+            
+            // Update rejected applications table
+            const rejectedApplications = applications.filter(app => app.status === 'rejected');
+            updateTable('rejectedTableBody', rejectedApplications);
+        }
+        
+        function updateTable(tableId, applications) {
+            const tableBody = document.getElementById(tableId);
+            tableBody.innerHTML = '';
+            
+            if (applications.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="10" style="text-align: center; padding: 30px; color: #7f8c8d;">No applications found</td>`;
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            applications.forEach(application => {
+                const row = document.createElement('tr');
+                const skillsText = application.skills.slice(0, 3).join(', ') + (application.skills.length > 3 ? '...' : '');
+                
+                if (tableId === 'allTableBody') {
+                    row.innerHTML = `
+                        <td>${application.id}</td>
+                        <td>${application.fullName}</td>
+                        <td>${application.email}</td>
+                        <td>${application.phone}</td>
+                        <td>${application.highestEducation}</td>
+                        <td>${skillsText}</td>
+                        <td>${application.hasBike}</td>
+                        <td><span class="status-badge status-${application.status}">${application.status}</span></td>
+                        <td>${application.applicationDate}</td>
+                        <td>
+                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;" data-id="${application.id}">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    `;
+                } else if (tableId === 'pendingTableBody') {
+                    row.innerHTML = `
+                        <td>${application.id}</td>
+                        <td>${application.fullName}</td>
+                        <td>${application.email}</td>
+                        <td>${application.phone}</td>
+                        <td>${application.highestEducation}</td>
+                        <td>${skillsText}</td>
+                        <td>${application.hasBike}</td>
+                        <td>${application.applicationDate}</td>
+                        <td>
+                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;" data-id="${application.id}">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    `;
+                } else if (tableId === 'approvedTableBody') {
+                    row.innerHTML = `
+                        <td>${application.id}</td>
+                        <td>${application.fullName}</td>
+                        <td>${application.email}</td>
+                        <td>${application.phone}</td>
+                        <td>${application.highestEducation}</td>
+                        <td>${skillsText}</td>
+                        <td>${application.hasBike}</td>
+                        <td>${application.reviewDate || 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;" data-id="${application.id}">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    `;
+                } else if (tableId === 'rejectedTableBody') {
+                    row.innerHTML = `
+                        <td>${application.id}</td>
+                        <td>${application.fullName}</td>
+                        <td>${application.email}</td>
+                        <td>${application.phone}</td>
+                        <td>${application.highestEducation}</td>
+                        <td>${skillsText}</td>
+                        <td>${application.hasBike}</td>
+                        <td>${application.reviewDate || 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;" data-id="${application.id}">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    `;
+                }
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to view buttons
+            document.querySelectorAll(`#${tableId} .btn-primary`).forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    showApplicationDetails(id);
+                });
+            });
+        }
+        
+        // Load users
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem('jobUsers')) || [];
+            const applications = JSON.parse(localStorage.getItem('jobApplications')) || [];
+            
+            const tableBody = document.getElementById('usersTableBody');
+            tableBody.innerHTML = '';
+            
+            if (users.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="6" style="text-align: center; padding: 30px; color: #7f8c8d;">No registered candidates found</td>`;
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            users.forEach(user => {
+                const userApplications = applications.filter(app => app.userId === user.id);
+                const applicationCount = userApplications.length;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.createdAt.split('T')[0]}</td>
+                    <td>${applicationCount} application(s)</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Show application details
+        function showApplicationDetails(id) {
+            const applications = JSON.parse(localStorage.getItem('jobApplications'));
+            const application = applications.find(app => app.id === id);
+            
+            if (!application) return;
+            
+            currentApplicationId = id;
+            
+            const skillsText = application.skills.join(', ');
+            
+            document.getElementById('applicantDetails').innerHTML = `
+                <div class="application-preview">
+                    <div class="preview-photo">
+                        <img src="${application.photo}" alt="Passport Photo">
+                    </div>
+                    
+                    <div class="preview-section">
+                        <div class="preview-label">Application Information</div>
+                        <div class="preview-value">
+                            <strong>Application ID:</strong> ${application.id}<br>
+                            <strong>Status:</strong> <span class="status-badge status-${application.status}">${application.status}</span><br>
+                            <strong>Application Date:</strong> ${application.applicationDate}<br>
+                            ${application.reviewDate ? `<strong>Review Date:</strong> ${application.reviewDate}<br>` : ''}
+                            ${application.reviewedBy ? `<strong>Reviewed By:</strong> ${application.reviewedBy}<br>` : ''}
+                            ${application.adminNotes ? `<strong>Admin Notes:</strong> ${application.adminNotes}<br>` : ''}
+                            <strong>User ID:</strong> ${application.userId}<br>
+                            <strong>User Email:</strong> ${application.userEmail}
+                        </div>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <div class="preview-label">Personal Information</div>
+                        <div class="preview-value">
+                            <strong>Name:</strong> ${application.fullName}<br>
+                            <strong>Email:</strong> ${application.email}<br>
+                            <strong>Phone:</strong> ${application.phone}<br>
+                            <strong>Date of Birth:</strong> ${application.dob || 'Not specified'}<br>
+                            <strong>Gender:</strong> ${application.gender || 'Not specified'}
+                        </div>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <div class="preview-label">Educational Background</div>
+                        <div class="preview-value">
+                            <strong>Highest Education:</strong> ${application.highestEducation}<br>
+                            <strong>Institution:</strong> ${application.institution}<br>
+                            <strong>Field of Study:</strong> ${application.fieldOfStudy || 'Not specified'}<br>
+                            <strong>Graduation Year:</strong> ${application.graduationYear || 'Not specified'}
+                        </div>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <div class="preview-label">Address Details</div>
+                        <div class="preview-value">
+                            <strong>Address:</strong> ${application.address}<br>
+                            <strong>City:</strong> ${application.city}<br>
+                            <strong>State:</strong> ${application.state || 'Not specified'}<br>
+                            <strong>Postal Code:</strong> ${application.postalCode || 'Not specified'}<br>
+                            <strong>Country:</strong> ${application.country}
+                        </div>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <div class="preview-label">Skills & Experience</div>
+                        <div class="preview-value">
+                            <strong>Skills:</strong> ${skillsText}<br>
+                            <strong>Experience:</strong> ${application.experience || '0'} years<br>
+                            <strong>Previous Job:</strong> ${application.previousJob || 'Not specified'}
+                        </div>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <div class="preview-label">Work Description</div>
+                        <div class="preview-value">${application.workDescription || 'Not specified'}</div>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <div class="preview-label">Assets & Field Work</div>
+                        <div class="preview-value">
+                            <strong>Has Bike:</strong> ${application.hasBike}<br>
+                            <strong>Has Smartphone:</strong> ${application.hasSmartphone}<br>
+                            <strong>Willing for Field Work:</strong> ${application.fieldWork}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Set up admin action buttons
+            let actionButtons = '';
+            
+            if (application.status === 'pending') {
+                actionButtons = `
+                    <button id="approveBtn" class="btn btn-success">
+                        <i class="fas fa-check-circle"></i> Approve
+                    </button>
+                    <button id="rejectBtn" class="btn btn-danger">
+                        <i class="fas fa-times-circle"></i> Reject
+                    </button>
+                    <button id="reviewBtn" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Review
+                    </button>
+                `;
+            } else {
+                actionButtons = `
+                    <button id="reviewBtn" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Update Review
+                    </button>
+                `;
+            }
+            
+            document.getElementById('adminActions').innerHTML = `
+                ${actionButtons}
+                <button id="closeModalBtn2" class="btn btn-secondary">Close</button>
+            `;
+            
+            // Add event listeners to action buttons
+            if (document.getElementById('approveBtn')) {
+                document.getElementById('approveBtn').addEventListener('click', function() {
+                    updateApplicationStatus(currentApplicationId, 'approved');
+                });
+            }
+            
+            if (document.getElementById('rejectBtn')) {
+                document.getElementById('rejectBtn').addEventListener('click', function() {
+                    updateApplicationStatus(currentApplicationId, 'rejected');
+                });
+            }
+            
+            if (document.getElementById('reviewBtn')) {
+                document.getElementById('reviewBtn').addEventListener('click', function() {
+                    showReviewModal(currentApplicationId);
+                });
+            }
+            
+            document.getElementById('closeModalBtn2').addEventListener('click', function() {
+                applicantModal.classList.add('hidden');
+            });
+            
+            // Show modal
+            applicantModal.classList.remove('hidden');
+        }
+        
+        // Close modal
+        closeModalBtn.addEventListener('click', function() {
+            applicantModal.classList.add('hidden');
+        });
+        
+        // Update application status
+        function updateApplicationStatus(id, status) {
+            const applications = JSON.parse(localStorage.getItem('jobApplications'));
+            const index = applications.findIndex(app => app.id === id);
+            
+            if (index !== -1) {
+                applications[index].status = status;
+                applications[index].reviewDate = new Date().toISOString().split('T')[0];
+                applications[index].reviewedBy = 'Admin';
+                
+                if (status === 'approved') {
+                    applications[index].adminNotes = 'Application approved by admin';
+                } else if (status === 'rejected') {
+                    applications[index].adminNotes = 'Application rejected by admin';
+                }
+                
+                localStorage.setItem('jobApplications', JSON.stringify(applications));
+                
+                // Reload data
+                loadStatistics();
+                loadApplications();
+                applicantModal.classList.add('hidden');
+                
+                alert(`Application ${status} successfully!`);
+            }
+        }
+        
+        // Show review modal
+        function showReviewModal(id) {
+            const applications = JSON.parse(localStorage.getItem('jobApplications'));
+            const application = applications.find(app => app.id === id);
+            
+            if (!application) return;
+            
+            currentApplicationId = id;
+            
+            // Pre-fill form with existing data
+            document.getElementById('reviewStatus').value = application.status;
+            document.getElementById('adminNotes').value = application.adminNotes || '';
+            document.getElementById('reviewedBy').value = application.reviewedBy || 'Admin';
+            
+            // Show modal
+            applicantModal.classList.add('hidden');
+            reviewModal.classList.remove('hidden');
+        }
+        
+        // Close review modal
+        closeReviewBtn.addEventListener('click', function() {
+            reviewModal.classList.add('hidden');
+        });
+        
+        cancelReviewBtn.addEventListener('click', function() {
+            reviewModal.classList.add('hidden');
+        });
+        
+        // Save review
+        saveReviewBtn.addEventListener('click', function() {
+            const status = document.getElementById('reviewStatus').value;
+            const notes = document.getElementById('adminNotes').value.trim();
+            const reviewedBy = document.getElementById('reviewedBy').value.trim();
+            
+            if (!reviewedBy) {
+                alert('Please enter your name');
+                return;
+            }
+            
+            const applications = JSON.parse(localStorage.getItem('jobApplications'));
+            const index = applications.findIndex(app => app.id === currentApplicationId);
+            
+            if (index !== -1) {
+                applications[index].status = status;
+                applications[index].adminNotes = notes;
+                applications[index].reviewedBy = reviewedBy;
+                applications[index].reviewDate = new Date().toISOString().split('T')[0];
+                
+                localStorage.setItem('jobApplications', JSON.stringify(applications));
+                
+                // Reload data
+                loadStatistics();
+                loadApplications();
+                reviewModal.classList.add('hidden');
+                
+                alert('Review saved successfully!');
+            }
+        });
+        
+        // Export data
+        function exportData() {
+            const applications = JSON.parse(localStorage.getItem('jobApplications')) || [];
+            const users = JSON.parse(localStorage.getItem('jobUsers')) || [];
+            
+            // Create CSV content
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Export applications
+            csvContent += "Applications\n";
+            csvContent += "ID,Name,Email,Phone,Education,Skills,Experience,Bike,Smartphone,Field Work,Status,Applied On,Reviewed On,Reviewed By,Notes\n";
+            
+            applications.forEach(app => {
+                const row = [
+                    app.id,
+                    `"${app.fullName}"`,
+                    app.email,
+                    app.phone,
+                    app.highestEducation,
+                    `"${app.skills.join(', ')}"`,
+                    app.experience,
+                    app.hasBike,
+                    app.hasSmartphone,
+                    app.fieldWork,
+                    app.status,
+                    app.applicationDate,
+                    app.reviewDate || '',
+                    app.reviewedBy || '',
+                    `"${app.adminNotes || ''}"`
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+            
+            csvContent += "\n\nUsers\n";
+            csvContent += "ID,Name,Email,Phone,Registered On\n";
+            
+            users.forEach(user => {
+                const row = [
+                    user.id,
+                    `"${user.name}"`,
+                    user.email,
+                    user.phone,
+                    user.createdAt.split('T')[0]
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+            
+            // Create download link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "job_applications_data.csv");
+            document.body.appendChild(link);
+            
+            // Download file
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('Data exported successfully as CSV file!');
+        }
+        
+        // Initialize
+        loadStatistics();
+    </script>
+</body>
+  </html>
